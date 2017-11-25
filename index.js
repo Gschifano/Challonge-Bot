@@ -2,7 +2,7 @@ var Discord = require('discord.js');
 var challonge = require('challonge')
 var request = require('request');
 
-challonge.api_key = ""
+challonge.api_key = k8NzSYdPE123QBxtMxnO6y5cfjz5q2osaWLKmPIb
 
 function checkRole(message,rolename){
 	var authorRoles = message.member.roles.array()
@@ -179,21 +179,6 @@ client.on('message', message => {
 			message.channel.sendMessage(finalMessage)
 		}
 
-		if(input[0] == "c!create" && input.length == 5 && checkRole(message,"Tournament Manager")){
-			challonge.createTournament(input[1],input[2],input[3],input[4],function(tournament){
-				message.channel.sendMessage(input[1] + " was created!")
-				message.guild.createRole({
-					name:"Participant - " + tournament.name,
-					color:"#FF7324",
-					mentionable: true
-				})
-				message.guild.createRole({
-					name:"Owner - " + tournament.name,
-					color:"#FF7324",
-					mentionable: true
-				}).then(role => message.member.addRole(role))
-			})
-		}
 
 		if(input[0] == "c!start" && input.length == 2 && checkRole(message,"Owner - " + input[1].replace(/_/g," "))){
 			challonge.getTournament(input[1],function(tournament){
@@ -214,17 +199,7 @@ client.on('message', message => {
 			})
 		}
 
-		if(input[0] == "c!delete" && input.length == 2 && checkRole(message,"Owner - " + input[1].replace(/_/g," "))){
-			challonge.deleteTournament(input[1],function(tournament){
-				message.channel.sendMessage(input[1] + " was deleted!")
-				var guildroles = message.guild.roles.array()
-					for (var i = guildroles.length - 1; i >= 0; i--) {
-						if(guildroles[i].name == "Owner - " + tournament.name || guildroles[i].name == "Participant - " + tournament.name ){
-							guildroles[i].delete();
-						}
-					}
-				})
-		}
+
 
 		if(input[0] == "c!edit" && input.length == 4 && checkRole(message,"Owner - " + input[1])){
 			challonge.updateTournament(input[1],input[2],input[3],function(){
@@ -255,10 +230,7 @@ client.on('message', message => {
 					} else {
 						challonge.addPlayer(tournament,message.author.username,message.author.id,function(){
 							message.channel.sendMessage(message.author.username + " is now entered in " + tournament.name + "!")
-							var guildroles = message.guild.roles.array()
-							for (var i = guildroles.length - 1; i >= 0; i--) {
-								if(guildroles[i].name == "Participant - " + tournament.name){
-									message.member.addRole(guildroles[i])
+							
 								}
 							}
 						})
@@ -279,10 +251,7 @@ client.on('message', message => {
 					} else {
 						challonge.removePlayer(tournament,message.author.username,function(){
 							message.channel.sendMessage(message.author.username + " is no longer entered in " + tournament.name + "!")
-							var guildroles = message.member.roles.array()
-							for (var i = guildroles.length - 1; i >= 0; i--) {
-								if(guildroles[i].name == "Participant - " + tournament.name){
-									message.member.removeRole(guildroles[i])
+							
 								}
 							}
 						})
